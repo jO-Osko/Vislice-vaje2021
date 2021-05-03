@@ -3,12 +3,40 @@ import random
 # Najprej konstante
 STEVILO_DOVOLJENIH_NAPAK = 10
 
+ZACETEK = "A"
+
 PRAVILNA_CRKA = "+"
 PONOVLJENA_CRKA = "o"
 NAPACNA_CRKA = "-"
 
 ZMAGA = "W"
 PORAZ = "X"
+
+
+class Vislice:
+    """
+    Krovni objekt, ki upravlja z vsemi igrami
+    """
+    def __init__(self):
+        self.igre = {}
+
+    def prost_id_igre(self):
+        return max(self.igre.keys()) + 1 
+
+    def nova_igra(self):
+        nov_id = self.prost_id_igre()
+
+        sveza = nova_igra(bazen_besed)
+
+        self.igre[nov_id] = (sveza, ZACETEK)
+
+        return nov_id
+
+    def ugibaj(self, id_igre, crka):
+        igra, stanje = self.igre[id_igre]
+        
+        novo_stanje = igra.ugibaj(crka)
+        self.igre[id_igre] = (igra, novo_stanje)
 
 class Igra:
     def __init__(self, geslo, crke): 
