@@ -1,12 +1,5 @@
-%from model import ZMAGA,PORAZ
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta charset="UTF-8">
-</head>
-<body>
-
+% rebase("pageBase.tpl", title="Igrajmo se")
+% from model import ZMAGA,PORAZ
   <h1>Vislice</h1>
   <h2>Igraš igro:</h2>
   <h3>Si v stanju {{ stanje }}</h3>
@@ -20,7 +13,7 @@
   <h3>Stopnja obešenosti</h3>
   <h4>{{ igra.stevilo_napak() }}</h4>
 
-  <img src="img/{{ igra.stevilo_napak() }}.jpg" 
+  <img src="/img/{{ igra.stevilo_napak() }}.jpg" height="100"
        alt="Stopnja obešenosti" >
 
 % if stanje == ZMAGA:
@@ -35,13 +28,10 @@
         <button type="submit">Nova igra</button>
       </form>
 % else:
-  <form method="POST" >
-      <label> Vnesi črko:
+                <form method="POST" >
+    <label> Vnesi črko:
         <input type="text" name="crka">
-      </label>
-      <input type="submit">
-  </form>     
+    </label>
+    <input type="submit">
+</form>     
 % end
-</body>
-
-</html>
