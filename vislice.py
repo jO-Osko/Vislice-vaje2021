@@ -1,6 +1,7 @@
 import bottle
 import model
 
+COOKIE_SECRET = "bkygnluob3764n78m9QN89ZXMZNZNHUZQIWDNASDMHSJMjsmdfs"
 
 @bottle.get("/")
 def index():
@@ -15,15 +16,27 @@ def nova_igra():
     )
 
     id_igre = visilice.nova_igra()
-    novi_url = f"/igra/{id_igre}/"
 
     visilice.zapisi_v_datoteko(model.DATOTEKA_ZA_SHRANJEVANJE)
+    
+    bottle.response.set_cookie("ID_IGRE", str(id_igre), path="/", 
+        secret=COOKIE_SECRET)
+    
+    bottle.redirect("/igraj/")
 
-    bottle.redirect(novi_url)
 
+@bottle.get("/igraj/")
+def pokazi_igro():
 
-@bottle.get("/igra/<id_igre:int>/")
-def pokazi_igro(id_igre):
+    cookie = bottle.request.get_cookie("ID_IGRE", secret=COOKIE_SECRET)
+    if cookie is None:
+        bottle.redirect("/")
+        return
+
+    id_igre = int(
+        cookie
+    )
+
     visilice = model.Vislice.preberi_iz_datoteke(
         model.DATOTEKA_ZA_SHRANJEVANJE
     )
@@ -36,8 +49,11 @@ def pokazi_igro(id_igre):
         igra=trenutna_igra, stanje=trenutno_stanje
     )
 
-@bottle.post("/igra/<id_igre:int>/")
-def ugibaj_na_igri(id_igre):
+@bottle.post("/igraj/")
+def ugibaj_na_igri():
+    id_igre = int(
+        bottle.request.get_cookie("ID_IGRE", secret=COOKIE_SECRET)
+    )
     visilice = model.Vislice.preberi_iz_datoteke(
         model.DATOTEKA_ZA_SHRANJEVANJE
     )
@@ -45,7 +61,7 @@ def ugibaj_na_igri(id_igre):
     
     visilice.ugibaj(id_igre, ugibana)
     visilice.zapisi_v_datoteko(model.DATOTEKA_ZA_SHRANJEVANJE)
-    return bottle.redirect(f"/igra/{id_igre}/")
+    return bottle.redirect(f"/igraj/")
 
 
 
