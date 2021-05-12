@@ -1,12 +1,33 @@
 {
-  "max_id": 1,
+  "max_id": 4,
   "igre": {
-    "1": [
-      {
+    "1": {
+      "igra":{
         "geslo": "ZATEGOVALEC",
         "crke": "ERT"
       },
-      "+"
+      "stanje":"+"
+    },
+    "2": [
+      {
+        "geslo": "LEHNJAKOVEC",
+        "crke": ""
+      },
+      "S"
+    ],
+    "3": [
+      {
+        "geslo": "\u010cETRTSTOLETNIK",
+        "crke": "SDFGHJKL123456"
+      },
+      "X"
+    ],
+    "4": [
+      {
+        "geslo": "NOKTURNSKI",
+        "crke": ""
+      },
+      "S"
     ]
   }
 }

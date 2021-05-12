@@ -1,4 +1,4 @@
-%rebase("base.tpl")
+%rebase("base.tpl", title="Igramo igro")
 %from model import ZMAGA, PORAZ
 <h1>Vislice</h1>
 <h2>Igraš igro:</h2>

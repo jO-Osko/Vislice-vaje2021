@@ -1,4 +1,4 @@
-%rebase("base.tpl")
+%rebase("base.tpl", title="Igra vislic")
 
 <img src="img/10.jpg" alt="obesanje">
 
