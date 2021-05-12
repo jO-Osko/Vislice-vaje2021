@@ -1,4 +1,5 @@
 import random
+import json
 
 # Najprej konstante
 STEVILO_DOVOLJENIH_NAPAK = 10
@@ -11,15 +12,17 @@ ZACETEK = "S"
 ZMAGA = "W"
 PORAZ = "X"
 
+DATOTEKA_S_STANJEM = "podatki.json"
 
 class Vislice:
-    def __init__(self):
-        self.igre = {}
-        self.max_id = 0
+    def __init__(self, zacetne_igre,
+           datoteka_s_stanjem=DATOTEKA_S_STANJEM):
+        self.igre = zacetne_igre
+        self.datoteka_s_stanjem = datoteka_s_stanjem
 
     def prost_id_igre(self):
-        self.max_id += 1
-        return self.max_id
+        if not self.igre: return 1
+        return max(self.igre.keys()) + 1
     
     """ Druga možnost: 
     def prost_id_igre_drugace(self):
@@ -49,12 +52,66 @@ class Vislice:
 
         return novo_stanje
 
+    def dobi_json_slovar(self):
+        slovar_iger = {}
+        for id_igre, (igra, stanje) in self.igre.items():
+            slovar_iger[id_igre] = [
+                igra.dobi_json_slovar(), # Kličem serializacijo igre
+                stanje,
+            ]
+
+        return {
+            "igre": slovar_iger,
+            "datoteka_s_stanjem": self.datoteka_s_stanjem,
+        }
+
+    @staticmethod
+    def preberi_iz_datoteke(ime_datoteke=DATOTEKA_S_STANJEM):
+        with open(ime_datoteke, "r") as in_file:
+            slovar = json.load(in_file) # Slovar
+
+        return Vislice.dobi_vislice_iz_slovarja(slovar)
+
+    @staticmethod
+    def dobi_vislice_iz_slovarja(slovar):
+        slovar_iger = {} # To je slovar objektov "Igra"
+        for id_igre, (igra_slovar, stanje) in slovar["igre"].items():
+            slovar_iger[int(id_igre)] = (
+                Igra.dobi_igro_iz_slovarja(igra_slovar),
+                stanje
+            )
+        
+        return Vislice(
+            slovar_iger, slovar["datoteka_s_stanjem"] 
+        )
+
+
+    def zapisi_v_datoteko(self):
+        # Naredi slovar
+        slovar = self.dobi_json_slovar()
+
+        # Zapiši ga v datoteko
+        with open(self.datoteka_s_stanjem, "w") as out_file:
+            json.dump(slovar, out_file, indent=4)
+
 class Igra:
     def __init__(self, geslo, crke): 
         self.geslo = geslo.upper() # Pravilno geslo
         # Kar je uporabnik do sedaj ugibal
         self.crke = crke.upper() # Do sedaj ugibane črke
         # Vse stvari v igri so zgolj velike črke
+
+    def dobi_json_slovar(self):
+        return {
+            "geslo": self.geslo,
+            "crke": self.crke,
+        }
+
+    @staticmethod
+    def dobi_igro_iz_slovarja(slovar):
+        return Igra(
+            slovar["geslo"], slovar.get("crke", ""),
+        )
 
     def napacne_crke(self):
         return [c for c in self.crke if c not in self.geslo]
